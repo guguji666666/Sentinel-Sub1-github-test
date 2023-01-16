@@ -1,0 +1,26 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "workspace": {
+        "type": "string"
+      }
+    },
+    "resources": [
+      {
+        "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+        "apiVersion": "2020-08-01",
+        "name": "[concat(parameters('workspace'), '/ASimAuthenticationAWSCloudTrail')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "etag": "*",
+          "displayName": "GJS test repository parser1",
+          "category": "Security",
+          "FunctionAlias": "Testrepositoryparser1",
+          "query": "resourcecontainers\r\n| where type == 'microsoft.resources\/subscriptions'\r\n| mv-expand managementGroupParent = properties.managementGroupAncestorsChain\r\n| where managementGroupParent.name =~ 'Test-GJS-MG1'\r\n| project name, id\r\n| sort by name asc",
+          "version": 1,
+          "functionParameters": "disabled:bool=False"
+        }
+      }
+    ]
+  }
